@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "mimo-tts": {
+      "command": "node",
+      "args": ["/absolute/path/to/mimo-tts-mcp/dist/bin/mimo-tts-mcp.js"],
+      "env": {
+        "MIMO_API_KEY": "your-mimo-api-key",
+        "MIMO_TTS_OUTPUT_DIR": "/Users/you/mimo-tts"
+      }
+    }
+  }
+}

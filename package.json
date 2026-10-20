@@ -1,0 +1,50 @@
+{
+  "name": "mimo-tts-mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server for Xiaomi MiMo TTS: preset voices, text-designed voices, and voice cloning via one OpenAI-compatible endpoint.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "bin": {
+    "mimo-tts-mcp": "dist/bin/mimo-tts-mcp.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/index.ts",
+    "prepack": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "mimo",
+    "mimo-tts",
+    "xiaomi",
+    "text-to-speech",
+    "tts",
+    "voice-clone",
+    "voice-design",
+    "ai-agents",
+    "claude-code"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.14"
+  }
+}

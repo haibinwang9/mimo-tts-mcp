@@ -52,7 +52,7 @@ API Key 在 <https://platform.xiaomimimo.com/console/api-keys> 创建。TTS 系�
 |---|---|---|---|
 | `MIMO_API_KEY` | 是（调用时） | — | MiMo API Key；也接受 `XIAOMIMIMO_API_KEY` |
 | `MIMO_BASE_URL` | 否 | `https://api.xiaomimimo.com/v1` | 改用 Token Plan 或自建网关时覆盖 |
-| `MIMO_TTS_OUTPUT_DIR` | 否 | `~/mimo-tts` | 未指定 `output_path` 时的落盘目录 |
+| `MIMO_TTS_OUTPUT_DIR` | 否 | `~/mimo-tts` | 落盘目录，**同时也是写入沙箱边界**。支持 `~` 展开，相对路径按进程 cwd 解析后转成绝对路径 |
 | `MIMO_TTS_TIMEOUT_MS` | 否 | `180000` | 单次请求超时 |
 | `MIMO_TTS_ALLOW_ANY_PATH` | 否 | 未设置 | 设为 `1` 才允许写入 `MIMO_TTS_OUTPUT_DIR` 之外的任意路径 |
 
@@ -96,7 +96,7 @@ API Key 在 <https://platform.xiaomimimo.com/console/api-keys> 创建。TTS 系�
 
 `output_path` 与 `file_name` 来自模型输出，因此按不可信输入处理：
 
-- **路径限制**：默认只允许写入 `MIMO_TTS_OUTPUT_DIR`（默认 `~/mimo-tts`）。越界路径、`..` 穿越、以及指向目录外的符号链接子目录都会被拒绝。确实需要写任意位置时显式设置 `MIMO_TTS_ALLOW_ANY_PATH=1`。
+- **路径限制**：默认只允许写入 `MIMO_TTS_OUTPUT_DIR`（默认 `~/mimo-tts`）。该变量既决定默认落盘位置，也定义沙箱边界，因此建议按项目单独设置，例如 `"MIMO_TTS_OUTPUT_DIR": "/path/to/project/audio"`。越界路径、`..` 穿越、以及指向目录外的符号链接子目录都会被拒绝。确实需要写任意位置时显式设置 `MIMO_TTS_ALLOW_ANY_PATH=1`。
 - **从不覆盖**：目标已存在时不覆盖，自动改用 `-2`、`-3` 后缀，并用 `wx` 标志打开，因此也不会跟随已存在的符号链接写到别处。这样即使模型给出 `~/.bashrc` 这类路径，也只会新建一个同名新文件，不会破坏原文件。
 - **文件名净化**：`file_name` 中的路径分隔符会被清除，无法借它跳出目录。
 - **样本只读**：`sample_path` 仅用于读取，从不写入。

@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import os from "node:os";
+import path from "node:path";
 import { wavFromPcm16 } from "../src/wav.js";
 import { resolveOutputPath } from "../src/output.js";
 import { loadConfig, MISSING_API_KEY_MESSAGE, requireApiKey } from "../src/config.js";
@@ -60,6 +62,23 @@ describe("loadConfig", () => {
 
   it("falls back to XIAOMIMIMO_API_KEY and ignores a blank primary key", () => {
     expect(loadConfig({ MIMO_API_KEY: "  ", XIAOMIMIMO_API_KEY: "alt" }).apiKey).toBe("alt");
+  });
+
+  it("expands a leading tilde instead of creating a literal ~ directory", () => {
+    const home = os.homedir();
+    expect(loadConfig({ MIMO_TTS_OUTPUT_DIR: "~/audio" }).outputDir).toBe(path.join(home, "audio"));
+    expect(loadConfig({ MIMO_TTS_OUTPUT_DIR: "~" }).outputDir).toBe(home);
+  });
+
+  it("makes a relative output dir absolute against cwd", () => {
+    const config = loadConfig({ MIMO_TTS_OUTPUT_DIR: "audio/out" });
+    expect(path.isAbsolute(config.outputDir)).toBe(true);
+    expect(config.outputDir).toBe(path.resolve("audio/out"));
+  });
+
+  it("does not treat a non-leading tilde as a home reference", () => {
+    const config = loadConfig({ MIMO_TTS_OUTPUT_DIR: "/tmp/a~b" });
+    expect(config.outputDir).toBe("/tmp/a~b");
   });
 
   it("refuses to synthesize without a key", () => {
